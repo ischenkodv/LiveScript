@@ -88,8 +88,19 @@ switch
 !function compile-scripts
   positional.for-each !-> walk it, (path.normalize it), true
   !function walk source, base, top
+
+    dir = path.dirname source
+    if o.output
+      filename = output-filename source, false
+      dir = path.join o.output, dir.slice if base is '.' then 0 else base.length
+      source = path.normalize source
+      js-path = path.join dir, filename
+      relative-path = path.relative path.dirname(js-path), source
+    else
+      relative-path = null
+
     !function work
-      fshoot 'readFile' source, !-> compile-script source, "#it", base
+      fshoot 'readFile' source, !-> compile-script source, "#it", base, relative-path
     e, stats <-! fs.stat source
     if e
       die "Can't find: #source" if not top or /(?:\.ls|\/)$/test source
@@ -105,9 +116,10 @@ switch
 
 # Compile a single source script, containing the given code, according to the
 # requested options.
-!function compile-script filename, input, base
+!function compile-script filename, input, base, relative-path
   options = {
       filename
+      relative-path
       output-filename: output-filename filename, o.json
       o.bare
       o.const
