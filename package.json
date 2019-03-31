@@ -45,7 +45,7 @@
   "dependencies": {
     "prelude-ls": "~1.1.2",
     "optionator": "~0.8.2",
-    "source-map": "=0.7.3",
+    "source-map": "=0.6.1",
     "source-map-support": "=0.5.11"
   },
   "devDependencies": {
